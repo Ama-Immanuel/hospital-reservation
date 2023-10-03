@@ -1,0 +1,2 @@
+def generateJWT():
+    return "jwt"
