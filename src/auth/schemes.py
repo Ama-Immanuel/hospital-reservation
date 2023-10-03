@@ -6,3 +6,4 @@ class UserBase(BaseModel):
     password: str
     phone: str
     code: str
+    role:str
