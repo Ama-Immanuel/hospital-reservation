@@ -1,11 +1,21 @@
-import os 
-from dotenv import load_dotenv, find_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-load_dotenv(find_dotenv())
+from config import POSTGRES_PORT, POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_SERVER, POSTGRES_USER
 
-POSTGRES_USER=os.getenv("POSTGRES_USER")
-POSTGRES_PASSWORD=os.getenv("POSTGRES_USER")
-POSTGRES_SERVER=os.getenv("POSTGRES_SERVER")
-POSTGRE_PORT=os.getenv("POSTGRES_PORT")
-POSTGRES_DB=os.getenv("POSTGRES_DB")
 
+URL = "postgresql://"+POSTGRES_USER+":"+POSTGRES_PASSWORD+"@"+POSTGRES_SERVER+":"+POSTGRES_PORT+"/"+POSTGRES_DB
+
+engine = create_engine(URL)
+
+Session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
+
+def get_db():
+    db = Session_local()
+    try:
+        yield db
+    finally:
+        db.close()
